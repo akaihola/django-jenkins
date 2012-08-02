@@ -11,10 +11,11 @@ from lettuce import registry
 
 class Task(BaseTask):
     option_list = [
-        make_option("--lettuce-server",
-               dest="lettuce-server",
-               help="do not start runserver for lettuce tests",
-               default=False),
+        make_option("--no-lettuce-server",
+                    dest="lettuce-server",
+                    help="do not start runserver for lettuce tests",
+                    action='store_false',
+                    default=True),
     ]
 
     def __init__(self, test_labels, options):
