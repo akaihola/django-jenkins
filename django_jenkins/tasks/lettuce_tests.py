@@ -31,8 +31,20 @@ class Task(BaseTask):
             from lettuce.django import server
             self.server = server
             self.server.start()
+        # The before.harvest hook should really be called just before starting
+        # to run Lettuce tests.  Now it gets run before all tests, including
+        # non-Lettuce tests.  Also, in Lettuce's "harvest" Django management
+        # command, various local variables are passed to the hook, and those
+        # should probably be recreated here instead of passing an empty dict.
+        registry.call_hook('before', 'harvest', {})
 
     def teardown_test_environment(self, **kwargs):
+        # The after.harvest hook should really be called just after finishing
+        # Lettuce tests.  Now it gets run after all tests, including
+        # non-Lettuce tests.  Also, in Lettuce's "harvest" Django management
+        # command, the list of test results is passed to the hook, and it
+        # should probably be recreated here instead of passing an empty list.
+        registry.call_hook('after', 'harvest', [])
         if self.lettuce_server:
             self.server.stop()
 
